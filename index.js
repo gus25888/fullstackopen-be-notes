@@ -7,6 +7,8 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(morgan('tiny'))
+// Middleware para permitir que se obtengan archivos estaticos ubicados en el directorio enviado.
+app.use(express.static('dist'))
 
 // Middleware definido para ver datos de las solicitudes.
 const requestLogger = (request, response, next) => {
