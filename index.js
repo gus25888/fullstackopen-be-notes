@@ -1,6 +1,11 @@
+require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan')
 const cors = require('cors')
+
+const Note = require('./models/note')
+
+
 const app = express()
 
 // Middleware de express (json-parser) usado transformar datos JS a JSON directamente.
@@ -10,54 +15,23 @@ app.use(morgan('tiny'))
 // Middleware para permitir que se obtengan archivos estaticos ubicados en el directorio enviado.
 app.use(express.static('dist'))
 
-// Middleware definido para ver datos de las solicitudes.
-const requestLogger = (request, response, next) => {
-    console.log('Method:', request.method)
-    console.log('Path:  ', request.path)
-    console.log('Body:  ', request.body)
-    console.log('---')
-    next()
-}
-
-// Se invoca antes de los endpoints para que aplique a todos.
-// app.use(requestLogger)
-
-let notes = [
-    {
-        id: 1,
-        content: "HTML is easy",
-        important: true
-    },
-    {
-        id: 2,
-        content: "Browser can execute only JavaScript",
-        important: false
-    },
-    {
-        id: 3,
-        content: "GET and POST are the most important methods of HTTP protocol",
-        important: true
-    }
-]
-
+/* ***************ROUTES*************** */
 app.get('/', (request, response) => {
     response.send('<h1>Hello world</h1>')
 })
 
 app.get('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const note = notes.find(note => note.id === id)
-
-    if (note) {
-        response.json(note)
-    }
-    else {
-        response.status(404).end()
-    }
+    Note
+        .findById(request.params.id)
+        .then(noteObtained => response.json(noteObtained))
 })
 
 app.get('/api/notes', (request, response) => {
-    response.json(notes)
+    Note
+        .find({})
+        .then(notes => {
+            response.json(notes)
+        })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -76,24 +50,15 @@ app.post('/api/notes', (request, response) => {
         })
     }
 
-    const note = {
+    const newNote = new Note({
         content: body.content,
         important: Boolean(body.important) || false,
-        id: generateId()
-    }
+    })
 
-    notes = notes.concat(note)
-
-    response.json(note)
+    newNote
+        .save()
+        .then(savedNote => response.json(savedNote))
 })
-
-const generateId = () => {
-    const maxId = notes.length > 0
-        ? Math.max(...notes.map(n => n.id))
-        : 0
-    return maxId + 1;
-}
-
 
 
 const unknownEndpoint = (request, response) => {
