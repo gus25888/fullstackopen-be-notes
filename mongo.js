@@ -18,7 +18,10 @@ const url =
 mongoose.set('strictQuery', false)
 
 
-mongoose.connect(url)
+mongoose
+    .connect(url)
+    .then(result => console.log(`Connected to MongoDB`))
+    .catch(error => console.log(`Error connecting to MongoDB`, error.message))
 
 //* Para poder manejar los datos se debe generar primero un esquema que indique a mongoose, como es la estructura de los datos a usar
 const noteSchema = new mongoose.Schema({
