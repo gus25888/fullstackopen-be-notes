@@ -9,7 +9,8 @@
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../exercises-full-stack-open/part2/ && npm run build && @powershell Copy-Item dist -Recurse ../../fullstackopen-notes",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "Gustavo Baeza",
   "license": "ISC",
@@ -22,7 +23,12 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
     "@flydotio/dockerfile": "^0.5.9",
+    "@stylistic/eslint-plugin-js": "^2.11.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.13.0",
     "nodemon": "^3.1.7"
   }
 }

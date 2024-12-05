@@ -2,25 +2,25 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI
 
 /* Conexión a mongoDB */
 mongoose
-    .connect(url)
-    .then(result => console.log(`Connected to MongoDB`))
-    .catch(error => console.log(`Error connecting to MongoDB`, error.message))
+  .connect(url)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(error => console.log('Error connecting to MongoDB', error.message))
 
 /*
  * Preparación de esquema para indicar los nombres de los campos del documento que se obtendrán desde la BD conectada.
  * Además, en el objeto enviado para su configuración se indica el tipo y las validaciones que tendrá el campo.
 */
 const noteSchema = new mongoose.Schema({
-    content: {
-        type: String,
-        minLength: 5,
-        required: true
-    },
-    important: Boolean,
+  content: {
+    type: String,
+    minLength: 5,
+    required: true
+  },
+  important: Boolean,
 })
 
 /*
@@ -30,11 +30,11 @@ const noteSchema = new mongoose.Schema({
 * Finalmente, se eliminan las propiedades no utilizadas.
 */
 noteSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id;
-        delete returnedObject.__v;
-    }
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
 })
 
-module.exports = mongoose.model('Note', noteSchema);
+module.exports = mongoose.model('Note', noteSchema)
