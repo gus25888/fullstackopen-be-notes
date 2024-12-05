@@ -59,11 +59,11 @@ app.delete('/api/notes/:id', (request, response, next) => {
 app.post('/api/notes', (request, response, next) => {
     const body = request.body
 
-    if (!body.content) {
-        return response.status(400).json({
-            error: 'content missing'
-        })
-    }
+    // if (!body.content) {
+    //     return response.status(400).json({
+    //         error: 'content missing'
+    //     })
+    // }
 
     const newNote = new Note({
         content: body.content,
@@ -77,19 +77,24 @@ app.post('/api/notes', (request, response, next) => {
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
-    const body = request.body;
+    const { content, important } = request.body;
 
-    // Se genera un objeto plano con el nuevo contenido de la nota.
-    // NO SE USA una nueva instancia de Note para esto.
-    const note = {
-        content: body.content,
-        important: body.important
-    }
-
-    // Requiere id Documento, nuevos valores a modificar, opciones.
-    // Las opciones new=true, indican que el resultado de la operacion retornará la nota actualizada.
+    /* Consideraciones para findByIdAndUpdate
+    * Se genera un objeto plano con el nuevo contenido de la nota.
+    * NO SE USA una nueva instancia de Note para esto.
+    * Requiere:
+    *   id Documento,
+    *   nuevos valores a modificar
+    *   opciones:
+    *       new: true,           indica que el resultado de la operacion retornará la nota actualizada.
+    *       runValidators: true, indica que se utilizará las validaciones definidas en el Schema
+    *       context: 'query',    permite indicar que el contexto de la validacion afecta solo a esta operación.
+    */
     Note
-        .findByIdAndUpdate(request.params.id, note, { new: true })
+        .findByIdAndUpdate(
+            request.params.id,
+            { content, important, },
+            { new: true, runValidators: true, context: 'query' })
         .then(updatedNote => { response.json(updatedNote) })
         .catch(error => next(error))
 })
@@ -110,6 +115,8 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({ error: error.message })
     }
     /* En caso de no encontrar algún error específico se envia el error al manejador de errores de Express */
     next(error)

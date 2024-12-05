@@ -10,9 +10,16 @@ mongoose
     .then(result => console.log(`Connected to MongoDB`))
     .catch(error => console.log(`Error connecting to MongoDB`, error.message))
 
-/** Preparación de esquema para indicar los nombres y tipos de los documentos que se obtendrán desde la BD conectada. */
+/*
+ * Preparación de esquema para indicar los nombres de los campos del documento que se obtendrán desde la BD conectada.
+ * Además, en el objeto enviado para su configuración se indica el tipo y las validaciones que tendrá el campo.
+*/
 const noteSchema = new mongoose.Schema({
-    content: String,
+    content: {
+        type: String,
+        minLength: 5,
+        required: true
+    },
     important: Boolean,
 })
 
