@@ -1,15 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.set('strictQuery', false)
-
-const url = process.env.MONGODB_URI
-
-/* Conexión a mongoDB */
-mongoose
-  .connect(url)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(error => console.log('Error connecting to MongoDB', error.message))
-
 /*
  * Preparación de esquema para indicar los nombres de los campos del documento que se obtendrán desde la BD conectada.
  * Además, en el objeto enviado para su configuración se indica el tipo y las validaciones que tendrá el campo.
