@@ -19,6 +19,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
+  } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
+    return response.status(400).json({ error: 'expected `username` to be unique' })
   }
   /* En caso de no encontrar algún error específico se envia el error al manejador de errores de Express */
   next(error)

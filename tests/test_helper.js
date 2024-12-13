@@ -1,13 +1,17 @@
+const bcrypt = require('bcrypt')
 const Note = require('../models/note')
+const User = require('../models/user')
 
 const initialNotes = [
   {
     content: 'HTML is easy',
-    important: false
+    important: false,
+    user: '675b783678d4e7d952fca1a0'
   },
   {
     content: 'Browser can execute only JavaScript',
-    important: true
+    important: true,
+    user: '675b783678d4e7d952fca1a0'
   }
 ]
 
@@ -24,6 +28,20 @@ const notesInDb = async () => {
   return notes.map(note => note.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
+const userInitialization = async () => {
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ id: '675b783678d4e7d952fca1a0', username: 'root', passwordHash })
+
+  await user.save()
+}
+
 module.exports = {
-  initialNotes, nonExistingId, notesInDb
+  initialNotes, nonExistingId, notesInDb, usersInDb, userInitialization
 }

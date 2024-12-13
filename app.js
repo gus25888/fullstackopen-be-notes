@@ -8,6 +8,7 @@ const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 
 const notesRouter = require('./controllers/notes')
+const usersRouter = require('./controllers/users')
 
 const app = express()
 
@@ -34,6 +35,7 @@ app.use(middleware.requestLogger)
 
 /* ************** Middlewares de Rutas **************  */
 app.use('/api/notes', notesRouter)
+app.use('/api/users', usersRouter)
 
 /* ************** Middlewares para ruta no conocida y de errores **************  */
 app.use(middleware.unknownEndpoint)
